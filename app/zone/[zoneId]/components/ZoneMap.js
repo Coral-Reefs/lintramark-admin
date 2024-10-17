@@ -1,7 +1,14 @@
 "use client";
 
-import { GoogleMap, LoadScript, Polygon, Marker } from "@react-google-maps/api";
+import {
+  GoogleMap,
+  LoadScript,
+  Polygon,
+  Marker,
+  InfoWindow,
+} from "@react-google-maps/api";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const MAP_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API;
 
@@ -26,45 +33,16 @@ const zones = {
 };
 
 const peoplePositions = [
-  {
-    lat: 5.4455,
-    lng: 100.257,
-    name: "User A1",
-    zone: "zoneA",
-  },
-  {
-    lat: 5.4456,
-    lng: 100.2572,
-    name: "User A2",
-    zone: "zoneA",
-  },
-  {
-    lat: 5.4454,
-    lng: 100.2569,
-    name: "User A3",
-    zone: "zoneA",
-  },
-  {
-    lat: 5.4453,
-    lng: 100.2571,
-    name: "User A4",
-    zone: "zoneA",
-  },
-  {
-    lat: 5.4456,
-    lng: 100.2568,
-    name: "User A5",
-    zone: "zoneA",
-  },
-  {
-    lat: 5.4455,
-    lng: 100.2573,
-    name: "User A6",
-    zone: "zoneA",
-  },
+  { lat: 5.4455, lng: 100.257, name: "Robert" },
+  { lat: 5.4456, lng: 100.2572, name: "Joan" },
+  { lat: 5.4454, lng: 100.2569, name: "Ali" },
+  { lat: 5.4453, lng: 100.2571, name: "Kim" },
+  { lat: 5.4456, lng: 100.2568, name: "Logan" },
+  { lat: 5.4455, lng: 100.2573, name: "Adib" },
 ];
 
 const MapComponent = () => {
+  const [selectedPerson, setSelectedPerson] = useState(null);
   const defaultMapZoom = 19;
   const defaultMapOptions = {
     zoomControl: true,
@@ -131,7 +109,18 @@ const MapComponent = () => {
             <Marker
               key={index}
               position={{ lat: person.lat, lng: person.lng }}
-            ></Marker>
+              onMouseOver={() => setSelectedPerson(person)}
+              onMouseOut={() => setSelectedPerson(null)}
+            >
+              {selectedPerson && selectedPerson.name === person.name && (
+                <InfoWindow
+                  position={{ lat: person.lat, lng: person.lng }}
+                  options={{ disableAutoPan: true }}
+                >
+                  <div>{person.name}</div>
+                </InfoWindow>
+              )}
+            </Marker>
           ))}
         </GoogleMap>
       </LoadScript>
